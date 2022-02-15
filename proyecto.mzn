@@ -22,6 +22,16 @@ predicate fueraDePoligonos(var float: x,var float: y,var float: aX,var float: bX
     ((bX - aX)*(y - aY) - (bY - aY)*(x - aX)) >= 0.0
 );
 
+predicate insideLine(var float: x,var float: y,var float: aX,var float: bX,var float: aY,var float: bY) = (
+  ((bX - aX)*(y - aY) - (bY - aY)*(x - aX)) < 0.0
+);
+
+predicate insideRhombus(var float: x,var float: y,var float: aX,var float: bX,var float: aY,var float: bY) = (
+  forall(i in 1..4)(
+    insideLine(x, y, aX, bX, aY, bY)
+  )
+);
+
 % Retorna true si el punto que se revisa está al interior del territorio permitido.
 predicate checkInsideLand(var float: x, var float: y) = (
   (
@@ -51,7 +61,7 @@ predicate checkPoint(var float: x, var float: y, int: j) = (
 constraint r <= bound;
 constraint r >= 0;
 
-constraint forall(i in 1..m) (  
+constraint exists(i in 1..m) (  
   if (m == 1) then (
     exists(k in 1..4)( 
       exists(augment in 1..puntos)(
