@@ -1,6 +1,7 @@
 int: n;
 int: m;
-float: bound = n*n;
+float: bound = 2*n;
+int: puntos = 129;
 var 0.0..bound: r; %El radio del calculo con distancia en L
 
 array[1..m, 1..2] of int: ciudades;
@@ -8,73 +9,66 @@ array[1..m] of int: X = ciudades[1..m, 1];
 array[1..m] of int: Y = ciudades[1..m, 2];
 array[1..5] of int: direccionX = [0, 1, 0,-1, 0];
 array[1..5] of int: direccionY = [1, 0,-1, 0, 1];
-array[1..4] of int: dentro = [1, -1, 1, -1];
-
+array[1..puntos] of float: ux = [0/128, 1/128, 2/128, 3/128, 4/128, 5/128, 6/128, 7/128, 8/128, 9/128, 10/128, 11/128, 12/128, 13/128, 14/128, 15/128, 16/128, 17/128, 18/128, 19/128, 20/128, 21/128, 22/128, 23/128, 24/128, 25/128, 26/128, 27/128, 28/128, 29/128, 30/128, 31/128, 32/128, 33/128, 34/128, 35/128, 36/128, 37/128, 38/128, 39/128, 40/128, 41/128, 42/128, 43/128, 44/128, 45/128, 46/128, 47/128, 48/128, 49/128, 50/128, 51/128, 52/128, 53/128, 54/128, 55/128, 56/128, 57/128, 58/128, 59/128, 60/128, 61/128, 62/128, 63/128, 64/128, 65/128, 66/128, 67/128, 68/128, 69/128, 70/128, 71/128, 72/128, 73/128, 74/128, 75/128, 76/128, 77/128, 78/128, 79/128, 80/128, 81/128, 82/128, 83/128, 84/128, 85/128, 86/128, 87/128, 88/128, 89/128, 90/128, 91/128, 92/128, 93/128, 94/128, 95/128, 96/128, 97/128, 98/128, 99/128, 100/128, 101/128, 102/128, 103/128, 104/128, 105/128, 106/128, 107/128, 108/128, 109/128, 110/128, 111/128, 112/128, 113/128, 114/128, 115/128, 116/128, 117/128, 118/128, 119/128, 120/128, 121/128, 122/128, 123/128, 124/128, 125/128, 126/128, 127/128, 128/128];
+array[1..puntos] of float: uy = [128/128, 127/128, 126/128, 125/128, 124/128, 123/128, 122/128, 121/128, 120/128, 119/128, 118/128, 117/128, 116/128, 115/128, 114/128, 113/128, 112/128, 111/128, 110/128, 109/128, 108/128, 107/128, 106/128, 105/128, 104/128, 103/128, 102/128, 101/128, 100/128, 99/128, 98/128, 97/128, 96/128, 95/128, 94/128, 93/128, 92/128, 91/128, 90/128, 89/128, 88/128, 87/128, 86/128, 85/128, 84/128, 83/128, 82/128, 81/128, 80/128, 79/128, 78/128, 77/128, 76/128, 75/128, 74/128, 73/128, 72/128, 71/128, 70/128, 69/128, 68/128, 67/128, 66/128, 65/128, 64/128, 63/128, 62/128, 61/128, 60/128, 59/128, 58/128, 57/128, 56/128, 55/128, 54/128, 53/128, 52/128, 51/128, 50/128, 49/128, 48/128, 47/128, 46/128, 45/128, 44/128, 43/128, 42/128, 41/128, 40/128, 39/128, 38/128, 37/128, 36/128, 35/128, 34/128, 33/128, 32/128, 31/128, 30/128, 29/128, 28/128, 27/128, 26/128, 25/128, 24/128, 23/128, 22/128, 21/128, 20/128, 19/128, 18/128, 17/128, 16/128, 15/128, 14/128, 13/128, 12/128, 11/128, 10/128, 9/128, 8/128, 7/128, 6/128, 5/128, 4/128, 3/128, 2/128, 1/128, 0/128];
+array[1..4] of float: signox = [1, 1, -1, -1];
+array[1..4] of float: signoy = [1, -1, -1, 1];
 
 
 %Positivo es left, negativo es rigth
 
 %Retorna true si se encuentra fuera de un poligono.
-predicate fueraDePoligonos(int: dentro,var float: cY,var float: cX,var float: aX,var float: bX,var float: aY,var float: bY) = (
-    (dentro*((bX - aX)*(cY - aY) + (bY - aY)*(cX - aX)) >= 0)
+predicate fueraDePoligonos(var float: x,var float: y,var float: aX,var float: bX,var float: aY,var float: bY) = (
+    ((bX - aX)*(y - aY) - (bY - aY)*(x - aX)) >= 0.0
 );
 
-predicate checkPoint(var float: x, var float: y, int: j, int: k) = (
-    (
-      y >= 0 /\ 
-      y <= n /\ 
-      x >= 0  /\ 
-      x <= n /\ 
-      fueraDePoligonos(
-        dentro[k],
-        x,
-        y,
-        X[j] + r*direccionX[k],
-        X[j] + r*direccionX[k+1],
-        Y[j] + r*direccionY[k],
-        Y[j] + r*direccionY[k+1]
-      )
+% Retorna true si el punto que se revisa está al interior del territorio permitido.
+predicate checkInsideLand(var float: x, var float: y) = (
+  (
+    y >= 0 /\ 
+    y <= n /\ 
+    x >= 0  /\ 
+    x <= n
   )
 );
 
-predicate searchPoint(var float: ax, var float: bx, var float: ay, var float: by, int: j, int: k) = (
-  let{
-    var 0.0..n: x;
-    var 0.0..n: y;
-    
-    constraint x >= max(0.0, ax);
-    constraint x <= max(min(bx, n), 0.0);
-    constraint y >= max(0.0, ay);
-    constraint y <= max(min(by, n), 0.0);
-  } in
-    checkPoint(x, y, j, k)
-);
-
-% Retorna true si la punta no se encuentra dentro de otro poligono y está en los limites del mapa permitido. 
-predicate validPikeRombo(int: i, int: j, int: k, int: l) = (
-      
-      let{
-        var float: yl = Y[i] + r*direccionY[l],
-        var float: xl = X[i] + r*direccionX[l],
-        var float: xr = X[i] + r*direccionX[l+1],
-        var float: yr = Y[i] + r*direccionY[l+1]
-      } in
-      (
-        if (checkPoint(xl, yl, j, k)) then true
-        else(
-          searchPoint(min(xl, xr), max(xl, yr), min(yl, yr), max(yl, yr), j, k)
-        )endif 
-      )  
+predicate checkPoint(var float: x, var float: y, int: j) = (
+  (
+    checkInsideLand(x, y) /\
+    exists(l in 1..4)(
+      fueraDePoligonos(
+        x,
+        y,
+        X[j] + r*direccionX[l],
+        X[j] + r*direccionX[l+1],
+        Y[j] + r*direccionY[l],
+        Y[j] + r*direccionY[l+1]
+      )
+    )
+  )
 );
 
 constraint r <= bound;
 constraint r >= 0;
 
-constraint forall(i, j in 1..m where i != j) (  
-  % Retorna true si la punta no se encuentra dentro de otro poligono y está en los limites del mapa permitido. 
-  exists(k, l in 1..4)( 
-      validPikeRombo(i,j,k,l)
+constraint forall(i in 1..m) (  
+  if (m == 1) then (
+    exists(k in 1..4)( 
+      exists(augment in 1..puntos)(
+        checkInsideLand(signox[k]*r*ux[augment] + X[i], signoy[k]*r*uy[augment] + Y[i])
+      )
+    )
   )
+  else (
+    forall(j in 1..m where i != j)(
+      exists(k in 1..4)( 
+        exists(augment in 1..puntos)(
+          checkPoint(signox[k]*r*ux[augment] + X[i], signoy[k]*r*uy[augment] + Y[i], j)
+        )
+      )
+    )
+  )
+  endif
 );
 
 solve maximize r;
