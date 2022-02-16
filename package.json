@@ -1,0 +1,21 @@
+{
+  "name": "complejidad",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server/index.js"
+  },
+  "keywords": [],
+  "author": "Alejandro Pergueza <alejandro.pergueza@correounivalle.edu.co>",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "express": "^4.17.2",
+    "minizinc": "^3.0.2",
+    "minizinc-solver": "^0.2.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
