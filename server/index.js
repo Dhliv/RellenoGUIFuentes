@@ -15,12 +15,12 @@ app.post("/getSolution",
     const { data } = body;
     var exec = require('child_process').exec;
 
-    fs.writeFile('proyecto.dzn', data, (err) => {
+    fs.writeFile('Datos.dzn', data, (err) => {
 
       // In case of a error throw err.
       if (err) throw err;
       else {
-        const command = "minizinc proyecto.mzn proyecto.dzn";
+        const command = "minizinc Relleno.mzn Datos.dzn";
         exec(command,
           function (error, stdout, stderr) {
             console.log('stdout: ' + stdout);
@@ -28,7 +28,7 @@ app.post("/getSolution",
             if (error !== null) {
               console.log('exec error: ' + error);
               res.json("Error");
-            }else{
+            } else {
               console.log("NO ERROR")
               res.json(stdout);
             }
