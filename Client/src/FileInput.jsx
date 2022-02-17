@@ -17,29 +17,33 @@ export default function FileInput(props) {
     setCoordenadaY("");
   }
   return (
-    <div className="file-input">
+    <div className="file-input xd">
       {/*(F-2)*/}
       {console.log(fieldSize)}
+      <div className="input-group mb-3">
       <input
         type="number"
+        className='form-control'
         value={coordenadaX}
         placeholder='Coordenada X'
-        onChange={e => setCoordenadaX(e.target.value)}
+        onChange={e => setCoordenadaX(parseInt(e.target.value))}
       />
       <input
         type="number"
+        className='form-control'
         value={coordenadaY}
         placeholder='Coordenada Y'
-        onChange={e => setCoordenadaY(e.target.value)}
+        onChange={e => setCoordenadaY(parseInt(e.target.value))}
       />
       <button
         type='button'
-        className="button pink"
-        disabled={(coordenadaY && coordenadaX && coordenadaY>= 0 && coordenadaX>= 0 && coordenadaY <= fieldSize && coordenadaX <= fieldSize) ? "" : "disabled"}
+        className="btn btn-primary"
+        disabled={(coordenadaX !== "" && coordenadaY !== "" && coordenadaY>= 0 && coordenadaX>= 0 && coordenadaY <= fieldSize && coordenadaX <= fieldSize) ? "" : "disabled"}
         onClick={onClick}
       >
         Añadir
       </button>
+      </div>
     </div>
   )
 }

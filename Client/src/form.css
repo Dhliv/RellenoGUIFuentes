@@ -1,0 +1,42 @@
+.div_ciudad{
+  min-width: fit-content;
+  width: 80%;
+  padding: 5px;
+  display: flex;
+  justify-items: center;
+  /* background-color: red; */
+  border-style: solid;
+  border-radius: 4px;
+  border-color: #adb5bd ;
+  border-width: 2px;
+  /* text-align: center; */
+  margin: auto;
+}
+
+.todo_list{
+  margin-top: 2rem;
+}
+
+.div_ciudad > h4{
+  margin-right: 4rem; 
+  display: inline-block;
+  font-family: Verdana;
+  font-size: 1rem;
+}
+
+.file-input{
+  margin-top: 2rem;
+}
+
+.input-group{
+  margin:auto;
+  min-width: 40%;
+  width: fit-content;
+}
+.xd{
+  min-width: 60%;
+}
+
+.final-botton{
+  margin-bottom: 1rem;
+}
