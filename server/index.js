@@ -14,13 +14,14 @@ app.post("/getSolution",
   ({ body }, res) => {
     const { data } = body;
     var exec = require('child_process').exec;
+    console.log(data);
 
     fs.writeFile('Datos.dzn', data, (err) => {
 
       // In case of a error throw err.
       if (err) throw err;
       else {
-        const command = "minizinc Relleno.mzn Datos.dzn";
+        const command = "minizinc --solver Gecode Relleno.mzn Datos.dzn";
         exec(command,
           function (error, stdout, stderr) {
             console.log('stdout: ' + stdout);
